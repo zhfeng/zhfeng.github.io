@@ -35,7 +35,7 @@ if you get problems.
 ## Build the native images
 
 ### Quarkus
-Building a native image on Quarkus is as easy as issuing `./mvmw package -Pnative`:
+Building a native image on Quarkus is as easy as issuing `./mvnw package -Pnative`:
 
 ```
 git clone https://github.com/zhfeng/camel-quarkus-openapi-example
