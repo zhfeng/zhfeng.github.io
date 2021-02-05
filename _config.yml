@@ -19,7 +19,7 @@
 # in the templates via {{ site.myvariable }}.
 
 title: Zheng Feng's Blog
-email: zfeng@redhat.com
+email: zh.feng@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   This is a tech blog.
 baseurl: "" # the subpath of your site, e.g. /blog
@@ -31,6 +31,9 @@ github_username: zhfeng
 theme: minima
 plugins:
   - jekyll-feed
+
+exclude:
+  - temp
 
 # Exclude from processing.
 # The following items will not be processed, by default.
