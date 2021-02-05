@@ -41,7 +41,7 @@ Building a native image on Quarkus is as easy as issuing `./mvmw package -Pnativ
 git clone https://github.com/zhfeng/camel-quarkus-openapi-example
 cd camel-quarkus-openapi-example
 export GRAALVM_HOME /path/to/graalvm-ce-java11-20.3.0
-./mvmw package -Pnative 
+./mvnw package -Pnative 
 ```
 
 Note that you do not need to care for configuring GraalVM `native-image` tool at all. 
