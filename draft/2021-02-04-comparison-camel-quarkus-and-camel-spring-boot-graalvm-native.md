@@ -94,10 +94,10 @@ Here are the results
 
 [//]: # (you could perhaps continue the above sentence by describing your machine: ... on my Lenovo XY laptop)
 
-| Runtime        | Startup    | Boot + First Response Delay | Disk Size | Resident Set Size |
-| -------------  | ---------- | ----------------------------|-----------|-------------------|
-| Spring Native  |     0.174s |                       196ms |       98M |           152204K |
-| Quarkus Native |     0.022s |                        82ms |       97M |            61784K |
+| Runtime        | Time to first response | Disk Size | Resident Set Size |
+|----------------|------------------------|-----------|-------------------|
+| Spring Native  |                  196ms |       98M |           152204K |
+| Quarkus Native |                   82ms |       97M |            61784K |
 
 We can see that Camel Quarkus native is about 8x faster than SpringBoot native to startup.
 The Quarkus application also occupies less RSS memory. Camel Quarkus moves more initialization tasks from runtime to
