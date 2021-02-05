@@ -99,6 +99,6 @@ Here are the results
 | Spring Native  |                  196ms |       98M |           152204K |
 | Quarkus Native |                   82ms |       97M |            61784K |
 
-We can see that Camel Quarkus native is about 8x faster than SpringBoot native to startup.
+We can see that Camel Quarkus native is about 2x faster than SpringBoot native to startup.
 The Quarkus application also occupies less RSS memory. Camel Quarkus moves more initialization tasks from runtime to
 the build time. That's the reason for faster startup time and lower memory footprint.
