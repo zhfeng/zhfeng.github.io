@@ -80,7 +80,8 @@ curl http://localhost:8080/api/users
 `native-image-agent` outputs the configuration when the test application terminates. 
 I have checked in the configuration to git so that you do not need to perform those steps yourselves.
 
-[//]: # (What is actually the `native-image` command to compile the SpringBoot app?)
+You can also check *compile.sh* to find the `native-image` command to
+compile the SpringBoot app.
 
 ## Performance comparison
 
@@ -90,9 +91,7 @@ As a result of the the previous steps, we got two native executables
 
 Now we can use the [compare.sh](../../../assets/files/compare.sh) script to collect some numbers.
 
-Here are the results
-
-[//]: # (you could perhaps continue the above sentence by describing your machine: ... on my Lenovo XY laptop)
+Here are the results on my Lenovo P50 laptop
 
 | Runtime        | Time to first response | Disk Size | Resident Set Size |
 |----------------|------------------------|-----------|-------------------|
@@ -102,3 +101,8 @@ Here are the results
 We can see that Camel Quarkus native is about 2x faster than SpringBoot native to startup.
 The Quarkus application also occupies less RSS memory. Camel Quarkus moves more initialization tasks from runtime to
 the build time. That's the reason for faster startup time and lower memory footprint.
+
+## Acknowledgement
+
+I'd like to thank [Peter Palaga](https://github.com/ppalaga) for his
+reviewing and the outstanding suggestions.

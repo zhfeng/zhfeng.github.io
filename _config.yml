@@ -19,9 +19,9 @@
 # in the templates via {{ site.myvariable }}.
 
 title: Zheng Feng's Blog
-email: zh.feng@gmail.com
+email: zfeng@redhat.com
 description: >- # this means to ignore newlines until "baseurl:"
-  This is a tech blog.
+  The opinions and content I share on my own and not associated with my employer.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: amos_zhengfeng
