@@ -93,7 +93,7 @@ Refer to [ShardingSphere Document](https://shardingsphere.apache.org/document/cu
 We are using `quarkus-hibernate-orm` to access the databases and define a `User` Entity.
 
 ```java
-`import javax.persistence.Entity;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -119,7 +119,7 @@ public class User {
     public void setName(String name) {
         this.name = name;
     }
-}`
+}
 ```
 
 Refer to [Quarkus Hibernate ORM](https://cn.quarkus.io/guides/hibernate-orm) for more details.
