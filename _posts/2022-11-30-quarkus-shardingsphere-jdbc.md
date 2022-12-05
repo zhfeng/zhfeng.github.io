@@ -1,11 +1,11 @@
 # Integrate with Apache ShardingSphere JDBC and Quarkus
 ## Introduction
-[Apache ShardingSphere](https://shardingsphere.apache.org) is a great flexible ecosystem to transform any database into a distributed database system, and enhance it with sharding, elastic scaling, encryption features and more. [Quarkus](https://quarkus.io) is a Kubernetes Native Java stack tailored for OpenJDK HotSpot and GraalVM, crafted from the best of breed Java libraries and standards. It is a great framework to build microservices and serverless applications. In this article, I will show you how to integrate with Apache ShardingSphere JDBC and Quarkus.
+[Apache ShardingSphere](https://shardingsphere.apache.org) is a great flexible ecosystem to transform any database into a distributed database system, and enhance it with sharding, elastic scaling, encryption features and more. [Quarkus](https://quarkus.io) is a Kubernetes Native Java stack tailored for OpenJDK HotSpot and GraalVM, crafted from the best of breed Java libraries and standards. It is a great framework to build microservices and serverless applications. In this article, I will show you how to integrate with Apache ShardingSphere JDBC and Quarkus. So that it will facilitates to build the native cloud applications with Quarkus framework leveraging on the many powerful features of shardingsphere on databases.
 
 ## Prerequisites
 * JDK 11+
 * Maven 3.8.4
-* Create a new project with Quarkus
+* Create a new project with Quarkus 2.14.2.Final and Apache ShardingSphere 5.2.1
 ```shell
 mvn io.quarkus:quarkus-maven-plugin:create \
     -DprojectGroupId=org.apache.shardingsphere.example \
@@ -24,7 +24,7 @@ Now you need to `cd shardingsphere-quarkus-example` and run `mvn clean install`.
 ```
 Caused by: groovy.lang.MissingMethodException: No signature of method: io.restassured.internal.http.HTTPBuilder.parseResponse() is applicable for argument types:
 ```
-and please make sure to set `io.rest-assured:rest-assured` version with **5.2.0**
+please make sure to set `io.rest-assured:rest-assured` version with **5.2.0**
 
 ### Datasources configuration
 We can add two `H2` datasources `ds_0` and `ds_1` in `application.properties` for testing
@@ -41,10 +41,10 @@ quarkus.datasource.ds_1.jdbc.url=jdbc:h2:mem:ds_1
 Also, we can add a `shardingsphere` datasource
 ```properties
 quarkus.datasource.db-kind=shardingsphere
-quarkus.datasource.jdbc.url=jdbc:shardingsphere:classpath:config.yaml`
+quarkus.datasource.jdbc.url=jdbc:shardingsphere:classpath:config.yaml
 ```
 
-Please refer to [Quarkus Datasource](https://cn.quarkus.io/guides/datasource) and [ShardingSphere JDBC Driver](https://shardingsphere.apache.org/document/current/en/user-manual/shardingsphere-jdbc/yaml-config/jdbc_driver/) for more details.
+Please refer to [Quarkus Datasource](https://quarkus.io/guides/datasource) and [ShardingSphere JDBC Driver](https://shardingsphere.apache.org/document/current/en/user-manual/shardingsphere-jdbc/yaml-config/jdbc_driver/) for more details.
 
 ### ShardingSphere configuration
 Then we will create `config.yaml` for ShardingSphere configuration. Let's have a simple rule for sharding database `ds_0` and `ds_1` by using `user_id`. 
@@ -122,7 +122,7 @@ public class User {
 }
 ```
 
-Refer to [Quarkus Hibernate ORM](https://cn.quarkus.io/guides/hibernate-orm) for more details.
+Refer to [Quarkus Hibernate ORM](https://quarkus.io/guides/hibernate-orm) for more details.
 
 ### Create REST services
 Open `ShardingSphereQuarkusExample.java` and add the following codes:
@@ -164,7 +164,7 @@ public class ShardingSphereQuarkusExample {
 
 ---
 **NOTE:**
-When inserting a user into the database, shardingsphere routes it to the different database according to the sharding rules. Also, it controls the transaction by itself, so we need to disable the transaction support in the agroal. Also, shardingsphere can support multi types of backend databases, so we have to set `quarkus.hibernate-orm.dialect` explicitly to `io.quarkus.hibernate.orm.runtime.dialect.QuarkusH2Dialect` for H2 database. 
+When inserting a user into the database, shardingsphere routes it to the different database according to the sharding rules. Also, it controls the transaction by itself, so we need to disable the transaction support in the agroal. Also, shardingsphere can support multi types of backend databases, so we have to set `quarkus.hibernate-orm.dialect` to `io.quarkus.hibernate.orm.runtime.dialect.QuarkusH2Dialect` for H2 database explicitly.
 ```properties
 quarkus.datasource.ds_0.jdbc.transactions=DISABLED
 quarkus.datasource.ds_1.jdbc.transactions=DISABLED
@@ -173,12 +173,13 @@ quarkus.hibernate-orm.dialect=io.quarkus.hibernate.orm.runtime.dialect.QuarkusH2
 ```
 ---
 
-* GET `/users` will return all users in the database
-* POST `/users` will insert a user into the database
-* GET `/users/{ds}` will return the count of users in the database `{ds}`
+* GET `/users` will return all users in the databases
+* POST `/users` will insert a user into the databases
+* GET `/users/{ds}` will return the count of users in the database `{ds}`, e.g. `ds_0` or `ds_1`
 
 ## Testing
 Now we have all the codes ready, let's run the tests.
+
 ### Start an application
 ```shell
 ./mvnw clean package
@@ -207,6 +208,6 @@ curl http://localhost:8080/users/ds_1
 both of the results are `1`
 
 ## Conclusion
-In this article, we are using `quarkus-shardingsphere-jdbc` to build a simple application with ShardingSphere. We can see that it is very easy to use ShardingSphere with Quarkus. Currently, it only supports JVM mode, and we are working on the native support. This is a big challenge for us since the shardingsphere default rule language is based on `groovy` which is not fully supported in native mode with Quarkus.
+In this article, we are using `quarkus-shardingsphere-jdbc` to build a simple application. We can see that it is very easy to use ShardingSphere with Quarkus. Currently, it only works in JVM mode, and we are still working on the native support. This is a big challenge since the shardingsphere default rule language is based on `groovy` which is not fully supported in native mode with Quarkus. Also, there are many other limitions with GraalVM native building.
 
 The whole demo project is available at [Github](https://github.com/zhfeng/shardingsphere-quarkus-example). Feel free to try it out and give us feedback.
