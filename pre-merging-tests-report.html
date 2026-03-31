@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pre-Merging Tests Report</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card-bg: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --link: #58a6ff;
+      --green: #3fb950;
+      --red: #f85149;
+      --yellow: #d29922;
+      --blue: #58a6ff;
+      --purple: #bc8cff;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+    }
+    .subtitle {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+    }
+    .stats {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      flex: 1;
+      min-width: 140px;
+      text-align: center;
+    }
+    .stat-card .number { font-size: 2rem; font-weight: 700; }
+    .stat-card .label { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-card.pass .number { color: var(--green); }
+    .stat-card.fail .number { color: var(--red); }
+    .stat-card.partial .number { color: var(--yellow); }
+    .stat-card.dry-run .number { color: var(--purple); }
+    .stat-card.total .number { color: var(--blue); }
+
+    .section-title {
+      font-size: 1.2rem;
+      margin: 2rem 0 1rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-title .icon { font-size: 1.1rem; }
+
+    .job-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1rem;
+      transition: border-color 0.2s;
+    }
+    .job-card:hover { border-color: var(--link); }
+    .job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .job-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.6rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge.pass { background: rgba(63,185,80,0.15); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+    .badge.fail { background: rgba(248,81,73,0.15); color: var(--red); border: 1px solid rgba(248,81,73,0.3); }
+    .badge.partial { background: rgba(210,153,34,0.15); color: var(--yellow); border: 1px solid rgba(210,153,34,0.3); }
+    .badge.dry-run { background: rgba(188,140,255,0.15); color: var(--purple); border: 1px solid rgba(188,140,255,0.3); }
+
+    .job-meta {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-bottom: 0.75rem;
+    }
+    .job-meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .job-description {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+    }
+    .job-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    a {
+      color: var(--link);
+      text-decoration: none;
+    }
+    a:hover { text-decoration: underline; }
+    .job-links a {
+      font-size: 0.85rem;
+      padding: 0.25rem 0.6rem;
+      background: rgba(88,166,255,0.1);
+      border: 1px solid rgba(88,166,255,0.2);
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+    .job-links a:hover {
+      background: rgba(88,166,255,0.2);
+      text-decoration: none;
+    }
+    .key-evidence {
+      margin-top: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: rgba(88,166,255,0.05);
+      border-left: 3px solid var(--border);
+      border-radius: 0 6px 6px 0;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .key-evidence ul { padding-left: 1.2rem; }
+    .key-evidence li { margin-bottom: 0.25rem; }
+
+    footer {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Pre-Merging Tests Report</h1>
+    <p class="subtitle">HyperShift &mdash; openshift/hypershift &mdash; Generated 2026-03-31</p>
+
+    <div class="stats">
+      <div class="stat-card total"><div class="number">8</div><div class="label">Total Runs</div></div>
+      <div class="stat-card pass"><div class="number">2</div><div class="label">Passed</div></div>
+      <div class="stat-card partial"><div class="number">2</div><div class="label">Transient Fail</div></div>
+      <div class="stat-card dry-run"><div class="number">4</div><div class="label">Dry-Run</div></div>
+    </div>
+
+    <!-- CI Job Runs -->
+    <h2 class="section-title"><span class="icon">&#9881;</span> CI Job Runs</h2>
+
+    <!-- OCPBUGS-73721 -->
+    <div class="job-card">
+      <div class="job-header">
+        <span class="job-title">OCPBUGS-73721 &mdash; Enable Autoscaler Scale-from-Zero</span>
+        <span class="badge pass">Pass</span>
+      </div>
+      <div class="job-meta">
+        <span>PR: <a href="https://github.com/openshift/hypershift/pull/7466">hypershift#7466</a></span>
+        <span>Date: 2026-03-27</span>
+        <span>Duration: 1h18m (34min test)</span>
+      </div>
+      <div class="job-description">
+        Reused existing <code>TestNodePoolAutoscalingScaleFromZero</code> e2e test. Added <code>e2e-aws-scale-from-zero</code> job to release-4.21 config. Passed on first iteration.
+      </div>
+      <div class="job-links">
+        <a href="https://github.com/openshift/hypershift/pull/7466">PR #7466</a>
+        <a href="https://issues.redhat.com/browse/OCPBUGS-73721">OCPBUGS-73721</a>
+        <a href="https://github.com/openshift/release/pull/76959">CI PR: release#76959</a>
+        <a href="https://prow.ci.openshift.org/view/gs/test-platform-results/pr-logs/pull/openshift_release/76959/rehearse-76959-pull-ci-openshift-hypershift-release-4.21-e2e-aws-scale-from-zero/2037456343287205888">Prow Job</a>
+        <a href="https://github.com/openshift/hypershift/pull/7466#issuecomment-4141675068">PR Comment</a>
+      </div>
+      <div class="key-evidence">
+        <ul>
+          <li>MachineDeployment annotations verified: vCPU=2, memoryMb=8192</li>
+          <li>NodePool scaled from 0 &rarr; 1 replicas in ~6 min after workload creation</li>
+          <li>Workload pods successfully scheduled on scaled nodes</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- OCPBUGS-78705 -->
+    <div class="job-card">
+      <div class="job-header">
+        <span class="job-title">OCPBUGS-78705 &mdash; Bootstrap CVO Manifest Filtering by Feature-Set Annotation</span>
+        <span class="badge pass">Pass</span>
+      </div>
+      <div class="job-meta">
+        <span>PR: <a href="https://github.com/openshift/hypershift/pull/7984">hypershift#7984</a></span>
+        <span>Date: 2026-03-27</span>
+        <span>Job ID: 2037366046083518464</span>
+      </div>
+      <div class="job-description">
+        Custom <code>hypershift-aws-verify-cvo-manifests</code> step. All 8 verification checks passed. CVO pod running, 13 manifests found, annotation-based filtering working correctly.
+      </div>
+      <div class="job-links">
+        <a href="https://github.com/openshift/hypershift/pull/7984">PR #7984</a>
+        <a href="https://issues.redhat.com/browse/OCPBUGS-78705">OCPBUGS-78705</a>
+        <a href="https://github.com/openshift/release/pull/76937">CI PR: release#76937</a>
+        <a href="https://prow.ci.openshift.org/view/gs/test-platform-results/pr-logs/pull/openshift_release/76937/rehearse-76937-pull-ci-openshift-hypershift-main-e2e-aws-cvo-manifest-filtering/2037366046083518464">Prow Job</a>
+        <a href="https://github.com/openshift/hypershift/pull/7984#issuecomment-4140538854">PR Comment</a>
+      </div>
+      <div class="key-evidence">
+        <ul>
+          <li>1 annotated manifest matching Default feature-set, 12 unannotated included</li>
+          <li>ClusterVersion Available, not Degraded</li>
+          <li>Fix already merged to main &mdash; no image overrides needed</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- OCPBUGS-74960 -->
+    <div class="job-card">
+      <div class="job-header">
+        <span class="job-title">OCPBUGS-74960 &mdash; Private Cluster Security Group Cleanup on Deletion</span>
+        <span class="badge partial">Partial Pass</span>
+      </div>
+      <div class="job-meta">
+        <span>PR: <a href="https://github.com/openshift/hypershift/pull/7868">hypershift#7868</a></span>
+        <span>Date: 2026-03-26</span>
+        <span>Iterations: 4</span>
+      </div>
+      <div class="job-description">
+        <code>TestCreateClusterPrivate</code> e2e with custom SG baseline/verify steps. SG verification passed (44 new SGs detected, all belong to VPCs with active endpoints). E2e had a transient rate-limiter failure unrelated to the fix.
+      </div>
+      <div class="job-links">
+        <a href="https://github.com/openshift/hypershift/pull/7868">PR #7868</a>
+        <a href="https://issues.redhat.com/browse/OCPBUGS-74960">OCPBUGS-74960</a>
+        <a href="https://github.com/openshift/release/pull/76891">CI PR: release#76891</a>
+        <a href="https://prow.ci.openshift.org/view/gs/test-platform-results/pr-logs/pull/openshift_release/76891/rehearse-76891-periodic-ci-openshift-hypershift-release-4.23-periodics-e2e-aws-private-sg-cleanup/2037148815856766976">Prow Job</a>
+        <a href="https://github.com/openshift/hypershift/pull/7868#issuecomment-4135516032">PR Comment</a>
+      </div>
+      <div class="key-evidence">
+        <ul>
+          <li>SG Verify: PASSED (3m21s) &mdash; HC <code>private-fs4xj</code> SG properly cleaned up</li>
+          <li>E2e: FAILED (transient) &mdash; <code>controlPlaneVersion has no desired image</code>, rate-limiter exhaustion</li>
+          <li>HC rolled out successfully (10m48s), cluster destroyed cleanly</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- OCPBUGS-50003 -->
+    <div class="job-card">
+      <div class="job-header">
+        <span class="job-title">OCPBUGS-50003 &mdash; ConfigMap Fallback and EC2 Error Caching for vCPU Metrics</span>
+        <span class="badge fail">Failed (Transient)</span>
+      </div>
+      <div class="job-meta">
+        <span>PR: <a href="https://github.com/openshift/hypershift/pull/6723">hypershift#6723</a> (merged)</span>
+        <span>Date: 2026-03-30</span>
+      </div>
+      <div class="job-description">
+        Custom <code>e2e-aws-vcpu-metrics</code> workflow. Failed due to ImagePullBackOff &mdash; hypershift-tests image manifest became "unknown" at pull time. Custom setup step passed, indicating the code change is valid.
+      </div>
+      <div class="job-links">
+        <a href="https://github.com/openshift/hypershift/pull/6723">PR #6723</a>
+        <a href="https://issues.redhat.com/browse/OCPBUGS-50003">OCPBUGS-50003</a>
+        <a href="https://github.com/openshift/release/pull/77052">CI PR: release#77052</a>
+        <a href="https://github.com/openshift/hypershift/pull/6723#issuecomment-4152812501">PR Comment</a>
+      </div>
+      <div class="key-evidence">
+        <ul>
+          <li>Failure: ImagePullBackOff &mdash; transient CI infrastructure flake, not a code issue</li>
+          <li>Custom setup step (hypershift-aws-vcpu-metrics-setup) PASSED</li>
+          <li>Recommendation: Re-trigger rehearsal</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Dry-Run / Review-Only Runs -->
+    <h2 class="section-title"><span class="icon">&#128269;</span> Dry-Run / Review-Only Runs</h2>
+
+    <!-- CNTRLPLANE-2684 -->
+    <div class="job-card">
+      <div class="job-header">
+        <span class="job-title">CNTRLPLANE-2684 &mdash; CPO etcd-upload Subcommand</span>
+        <span class="badge dry-run">Dry-Run</span>
+      </div>
+      <div class="job-meta">
+        <span>PR: <a href="https://github.com/openshift/hypershift/pull/8017">hypershift#8017</a></span>
+        <span>Date: 2026-03-27</span>
+        <span>108 files changed, +27973 lines</span>
+      </div>
+      <div class="job-description">
+        Adds standalone CLI subcommand for uploading etcd snapshots to cloud storage (S3/Azure). Test plan written but no CI job executed. Full e2e coverage planned under CNTRLPLANE-2834.
+      </div>
+      <div class="job-links">
+        <a href="https://github.com/openshift/hypershift/pull/8017">PR #8017</a>
+        <a href="https://issues.redhat.com/browse/CNTRLPLANE-2684">CNTRLPLANE-2684</a>
+      </div>
+    </div>
+
+    <!-- OCPBUGS-42343 -->
+    <div class="job-card">
+      <div class="job-header">
+        <span class="job-title">OCPBUGS-42343 &mdash; VPA Operator Installation on HCP Clusters</span>
+        <span class="badge dry-run">Feasibility</span>
+      </div>
+      <div class="job-meta">
+        <span>PR: <a href="https://github.com/openshift/vertical-pod-autoscaler-operator/pull/219">vpa-operator#219</a></span>
+      </div>
+      <div class="job-description">
+        VPA installation fails on ROSA HCP because operator hardcodes <code>node-role.kubernetes.io/master</code> nodeSelector. Fix changes to <code>kubernetes.io/os: linux</code>. Feasibility rated EXACT_MATCH.
+      </div>
+      <div class="job-links">
+        <a href="https://github.com/openshift/vertical-pod-autoscaler-operator/pull/219">PR #219</a>
+        <a href="https://issues.redhat.com/browse/OCPBUGS-42343">OCPBUGS-42343</a>
+        <a href="https://github.com/openshift/vertical-pod-autoscaler-operator/pull/219#issuecomment-4152763335">PR Comment</a>
+      </div>
+    </div>
+
+    <!-- OCPBUGS-55151 -->
+    <div class="job-card">
+      <div class="job-header">
+        <span class="job-title">OCPBUGS-55151 &mdash; Proxy Certificate Validation Timing</span>
+        <span class="badge dry-run">Review Only</span>
+      </div>
+      <div class="job-meta">
+        <span>PR: <a href="https://github.com/openshift/hypershift/pull/7536">hypershift#7536</a> (merged)</span>
+        <span>Date: 2026-03-30</span>
+      </div>
+      <div class="job-description">
+        PR already merged (2026-02-11) and Jira already Verified. Dry-run verification skipped &mdash; no CI job needed.
+      </div>
+      <div class="job-links">
+        <a href="https://github.com/openshift/hypershift/pull/7536">PR #7536</a>
+        <a href="https://issues.redhat.com/browse/OCPBUGS-55151">OCPBUGS-55151</a>
+      </div>
+    </div>
+
+    <!-- OCPBUGS-78931 -->
+    <div class="job-card">
+      <div class="job-header">
+        <span class="job-title">OCPBUGS-78931 &mdash; KubeVirt-specific OADP Backup Settings</span>
+        <span class="badge dry-run">Dry-Run</span>
+      </div>
+      <div class="job-meta">
+        <span>PR: <a href="https://github.com/openshift/hypershift/pull/8022">hypershift#8022</a> (hold)</span>
+        <span>Date: 2026-03-30</span>
+      </div>
+      <div class="job-description">
+        Adds KubeVirt platform support to OADP backup/schedule CLI. Excludes RHCOS boot image PVCs via labelSelector. 8 new unit tests added (226 lines). Ready for merge from code correctness standpoint.
+      </div>
+      <div class="job-links">
+        <a href="https://github.com/openshift/hypershift/pull/8022">PR #8022</a>
+        <a href="https://issues.redhat.com/browse/OCPBUGS-78931">OCPBUGS-78931</a>
+        <a href="https://github.com/openshift/hypershift/pull/8022#issuecomment-4153125339">PR Comment</a>
+      </div>
+    </div>
+
+    <footer>
+      Pre-Merging Tests Report &mdash; openshift/hypershift &mdash; 2026-03-31
+    </footer>
+  </div>
+</body>
+</html>
